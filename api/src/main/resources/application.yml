@@ -11,12 +11,12 @@ spring:
     url: jdbc:mysql://127.0.0.1:3308/coupon_example
     username: root
     password: 1234
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG # Hibernate? ???? SQL ??? ??? ??
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE # ??? ????? ???? ?? ?? ex) binding parameter [1] as [BIGINT] - [42]
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        SQL: DEBUG # Hibernate? ???? SQL ??? ??? ??
+#        type:
+#          descriptor:
+#            sql:
+#              BasicBinder: TRACE # ??? ????? ???? ?? ?? ex) binding parameter [1] as [BIGINT] - [42]
