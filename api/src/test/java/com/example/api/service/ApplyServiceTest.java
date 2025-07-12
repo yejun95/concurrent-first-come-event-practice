@@ -51,6 +51,9 @@ class ApplyServiceTest {
         // Latch 숫자가 0이 될 때까지 기다림
         latch.await();
 
+        // Consumer와의 데이터 동기화를 맞추기 위한 강제 쓰레들 슬립
+        Thread.sleep(10000);
+
         long count = couponRepository.count();
 
         assertThat(count).isEqualTo(100);
