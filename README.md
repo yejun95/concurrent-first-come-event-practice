@@ -48,6 +48,18 @@ docker exec -it 003d7266f1a4 redis-cli
 
 $ 127.0.0.1:6379> incr coupon_count
 ```
+
+- `sadd`를 활용한 set 자료구조 사용법
+
+```
+127.0.0.1:6379> sadd test 1
+(integer) 1
+127.0.0.1:6379> sadd test 1
+(integer) 0
+127.0.0.1:6379> sadd test 1
+(integer) 0
+```
+> set 자료구조는 중복 키값을 허용하지 않기 때문에 이미 값이 존재하면 0을 리턴한다.
 <br>
 <hr>
 <br>
