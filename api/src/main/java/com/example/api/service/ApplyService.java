@@ -2,6 +2,7 @@ package com.example.api.service;
 
 import com.example.api.domain.Coupon;
 import com.example.api.producer.CouponCreateProducer;
+import com.example.api.repository.AppliedUserRepository;
 import com.example.api.repository.CouponCountRepository;
 import com.example.api.repository.CouponRepository;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,22 @@ public class ApplyService {
 
     private final CouponCreateProducer couponCreateProducer;
 
-    public ApplyService(CouponRepository couponRepository, CouponCountRepository couponCountRepository, CouponCreateProducer couponCreateProducer) {
+    private final AppliedUserRepository appliedUserRepository;
+
+    public ApplyService(CouponRepository couponRepository, CouponCountRepository couponCountRepository, CouponCreateProducer couponCreateProducer, AppliedUserRepository appliedUserRepository) {
         this.couponRepository = couponRepository;
         this.couponCountRepository = couponCountRepository;
         this.couponCreateProducer = couponCreateProducer;
+        this.appliedUserRepository = appliedUserRepository;
     }
 
     public void apply(Long userId) {
+        // userId 1개당 1개 쿠폰만 발급하도록 validation
+        Long apply = appliedUserRepository.add(userId);
+        if (apply != 1) {
+            return;
+        }
+
         // redis incr key:value
         // 127.0.0.1:6379> incr coupon_count
         // (integer) 1
