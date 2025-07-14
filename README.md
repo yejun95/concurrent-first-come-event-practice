@@ -45,6 +45,77 @@ CONTAINER ID   IMAGE     COMMAND                   CREATED         STATUS       
 f1b27c48c8bd   mysql     "docker-entrypoint.s…"   26 hours ago    Up 12 minutes   33060/tcp, 0.0.0.0:3308->3306/tcp   mysql
 
 docker exec -it 003d7266f1a4 redis-cli
+
+$ 127.0.0.1:6379> incr coupon_count
+```
+
+- `sadd`를 활용한 set 자료구조 사용법
+
+```
+127.0.0.1:6379> sadd test 1
+(integer) 1
+127.0.0.1:6379> sadd test 1
+(integer) 0
+127.0.0.1:6379> sadd test 1
+(integer) 0
+```
+> set 자료구조는 중복 키값을 허용하지 않기 때문에 이미 값이 존재하면 0을 리턴한다.
+<br>
+<hr>
+<br>
+
+## ✔️ zoopeeker and kafka for docker-compose
+- `docker-compose.yml` 파일 생성
+
+```yml
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNET: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+<br>
+
+- 파일이 있는 디렉토리에서 compose 명령어 실행
+
+```
+$ docker-compose up -d
+```
+<br>
+
+- 토픽 생성
+```
+$ docker exec -it kafka kafka-topics.sh --bootstrap-server localhost:9092 --create --topic testTopic
+```
+<br>
+
+- 프로듀서 실행
+```
+$ docker exec -it kafka kafka-console-producer.sh --topic testTopic --broker-list 0.0.0.0:9092
+```
+<br>
+
+- 컨슈머 실행
+```
+$ docker exec -it kafka kafka-console-consumer.sh --topic testTopic --bootstrap-server localhost:9092
+```
+<br>
+
+- kafkaTemplate을 사용한 Consumer 실행
+```
+docker exec -it kafka kafka-console-consumer.sh --topic coupon_create --bootstrap-server localhost:9092 --key-deserializer "org.apache.kafka.common.serialization.StringDeserializer" --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
 ```
 <br>
 <hr>
